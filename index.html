@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Radar de Ofertas — monitoramento de preços de hardware e games</title>
+<meta name="description" content="Canal de Telegram que monitora preços de hardware, periféricos e produtos gamer 24h por dia e publica apenas quedas reais, com histórico de preços verificável.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --ink:#0B1220;
+    --ink-raised:#121C2E;
+    --line:#1F2E45;
+    --signal:#4FD8C4;
+    --drop:#F0A339;
+    --text:#E6EDF6;
+    --muted:#8DA0BA;
+    --display:'Space Grotesk',system-ui,sans-serif;
+    --mono:'IBM Plex Mono',ui-monospace,monospace;
+  }
+
+  *{box-sizing:border-box;}
+
+  html{scroll-behavior:smooth;}
+
+  body{
+    margin:0;
+    background:var(--ink);
+    color:var(--text);
+    font-family:var(--display);
+    line-height:1.6;
+    -webkit-font-smoothing:antialiased;
+  }
+
+  .wrap{width:min(1080px,92vw);margin-inline:auto;}
+
+  /* ---------- topo ---------- */
+  header{padding:28px 0;border-bottom:1px solid var(--line);}
+  .bar{display:flex;align-items:center;justify-content:space-between;gap:16px;flex-wrap:wrap;}
+  .mark{display:flex;align-items:center;gap:12px;font-weight:700;letter-spacing:-0.02em;}
+  .mark svg{flex:none;}
+  .status{
+    font-family:var(--mono);font-size:12px;color:var(--muted);
+    display:flex;align-items:center;gap:8px;
+  }
+  .pulse{
+    width:7px;height:7px;border-radius:50%;background:var(--signal);
+    box-shadow:0 0 0 0 rgba(79,216,196,.6);animation:pulse 2.4s infinite;
+  }
+  @keyframes pulse{
+    70%{box-shadow:0 0 0 9px rgba(79,216,196,0);}
+    100%{box-shadow:0 0 0 0 rgba(79,216,196,0);}
+  }
+
+  /* ---------- hero ---------- */
+  .hero{padding:76px 0 64px;display:grid;grid-template-columns:1fr 1fr;gap:56px;align-items:center;}
+  h1{
+    font-size:clamp(2.3rem,5vw,3.6rem);line-height:1.05;letter-spacing:-0.035em;
+    margin:0 0 20px;font-weight:700;
+  }
+  h1 em{font-style:normal;color:var(--signal);}
+  .lede{font-size:1.08rem;color:var(--muted);margin:0 0 32px;max-width:44ch;}
+
+  .cta{
+    display:inline-flex;align-items:center;gap:10px;
+    background:var(--signal);color:#06121A;text-decoration:none;
+    font-weight:700;padding:15px 26px;border-radius:6px;
+    transition:transform .18s ease,box-shadow .18s ease;
+  }
+  .cta:hover{transform:translateY(-2px);box-shadow:0 10px 26px -12px var(--signal);}
+  .cta:focus-visible,a:focus-visible{outline:2px solid var(--signal);outline-offset:3px;}
+  .cta-note{font-family:var(--mono);font-size:12px;color:var(--muted);margin-top:14px;}
+
+  /* ---------- gráfico assinatura ---------- */
+  .chart-card{
+    background:var(--ink-raised);border:1px solid var(--line);border-radius:10px;
+    padding:22px;
+  }
+  .chart-head{display:flex;justify-content:space-between;align-items:baseline;gap:12px;margin-bottom:6px;}
+  .chart-head strong{font-size:.95rem;font-weight:500;}
+  .chart-head span{font-family:var(--mono);font-size:11px;color:var(--muted);}
+  .chart-price{font-family:var(--mono);font-size:1.9rem;font-weight:600;color:var(--drop);line-height:1.2;}
+  .chart-sub{font-family:var(--mono);font-size:12px;color:var(--muted);margin-bottom:14px;}
+  .spark{width:100%;height:120px;display:block;}
+  .spark path.line{
+    fill:none;stroke:var(--signal);stroke-width:2;
+    stroke-linejoin:round;stroke-linecap:round;
+    stroke-dasharray:520;stroke-dashoffset:520;
+    animation:draw 2.2s .3s ease-out forwards;
+  }
+  @keyframes draw{to{stroke-dashoffset:0;}}
+  .spark circle{opacity:0;animation:pop .4s 2.3s ease-out forwards;}
+  @keyframes pop{to{opacity:1;}}
+  .chart-foot{
+    display:flex;justify-content:space-between;
+    font-family:var(--mono);font-size:11px;color:var(--muted);margin-top:10px;
+  }
+
+  /* ---------- seções ---------- */
+  section{padding:64px 0;border-top:1px solid var(--line);}
+  h2{font-size:clamp(1.4rem,3vw,1.9rem);letter-spacing:-0.02em;margin:0 0 10px;}
+  .sec-lede{color:var(--muted);max-width:56ch;margin:0 0 36px;}
+
+  .grid{display:grid;grid-template-columns:repeat(3,1fr);gap:22px;}
+  .card{background:var(--ink-raised);border:1px solid var(--line);border-radius:10px;padding:24px;}
+  .card h3{margin:0 0 8px;font-size:1.02rem;}
+  .card p{margin:0;color:var(--muted);font-size:.94rem;}
+  .card .tag{
+    font-family:var(--mono);font-size:11px;color:var(--signal);
+    display:block;margin-bottom:12px;letter-spacing:.06em;
+  }
+
+  /* comparação */
+  .compare{display:grid;grid-template-columns:1fr 1fr;gap:22px;}
+  .compare > div{border:1px solid var(--line);border-radius:10px;padding:24px;}
+  .compare .ours{background:var(--ink-raised);border-color:var(--signal);}
+  .compare h3{font-size:.95rem;margin:0 0 16px;font-family:var(--mono);font-weight:500;letter-spacing:.04em;}
+  .compare .ours h3{color:var(--signal);}
+  .compare ul{list-style:none;margin:0;padding:0;}
+  .compare li{padding:9px 0;border-bottom:1px solid var(--line);font-size:.93rem;color:var(--muted);}
+  .compare li:last-child{border-bottom:0;}
+  .compare .ours li{color:var(--text);}
+
+  /* transparência */
+  .disclosure{
+    background:var(--ink-raised);border:1px solid var(--line);
+    border-left:3px solid var(--drop);border-radius:8px;padding:26px;
+  }
+  .disclosure p{margin:0 0 12px;color:var(--muted);}
+  .disclosure p:last-child{margin-bottom:0;}
+  .disclosure strong{color:var(--text);}
+
+  /* rodapé */
+  footer{padding:44px 0;border-top:1px solid var(--line);}
+  .foot{display:flex;justify-content:space-between;gap:16px;flex-wrap:wrap;font-family:var(--mono);font-size:12px;color:var(--muted);}
+  footer a{color:var(--signal);}
+
+  @media (max-width:820px){
+    .hero{grid-template-columns:1fr;gap:38px;padding:52px 0 44px;}
+    .grid,.compare{grid-template-columns:1fr;}
+  }
+
+  @media (prefers-reduced-motion:reduce){
+    *{animation:none!important;transition:none!important;}
+    .spark path.line{stroke-dashoffset:0;}
+    .spark circle{opacity:1;}
+    html{scroll-behavior:auto;}
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="wrap bar">
+    <div class="mark">
+      <svg width="26" height="26" viewBox="0 0 26 26" aria-hidden="true">
+        <rect x="1" y="7" width="24" height="12" rx="6" fill="none" stroke="#4FD8C4" stroke-width="1.6"/>
+        <path d="M7 10.5v4M5 12.5h4" stroke="#4FD8C4" stroke-width="1.6" stroke-linecap="round"/>
+        <circle cx="18" cy="11.5" r="1.1" fill="#4FD8C4"/>
+        <circle cx="20.5" cy="14" r="1.1" fill="#4FD8C4"/>
+      </svg>
+      Radar de Ofertas
+    </div>
+    <div class="status"><span class="pulse"></span> monitorando preços agora</div>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <div class="hero">
+    <div>
+      <h1>O desconto que a loja anuncia<br>nem sempre é <em>desconto</em>.</h1>
+      <p class="lede">
+        Acompanhamos o preço de hardware, periféricos e produtos gamer o dia inteiro
+        e guardamos o histórico de cada item. Quando publicamos uma queda, você vê
+        de quanto o preço realmente caiu — não a comparação com um valor que nunca foi praticado.
+      </p>
+      <a class="cta" href="https://t.me/RadarDeOferts">
+        Entrar no canal
+        <svg width="15" height="15" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+          <path d="M3 8h10M9 4l4 4-4 4" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>
+      <p class="cta-note">Canal no Telegram · gratuito · sem cadastro</p>
+    </div>
+
+    <div class="chart-card">
+      <div class="chart-head">
+        <strong>Memória Kingston 8GB DDR4 3200MHz</strong>
+        <span>exemplo real</span>
+      </div>
+      <div class="chart-price">R$ 441,00</div>
+      <div class="chart-sub">menor preço em 4 verificações · recorde anterior R$ 476,00</div>
+
+      <svg class="spark" viewBox="0 0 320 120" preserveAspectRatio="none" role="img"
+           aria-label="Gráfico mostrando o preço caindo de 512 para 441 reais ao longo de quatro verificações.">
+        <path class="line" d="M6,26 L82,34 L158,52 L234,64 L314,96"/>
+        <circle cx="314" cy="96" r="4.5" fill="#F0A339"/>
+      </svg>
+
+      <div class="chart-foot">
+        <span>R$ 512</span>
+        <span>hoje · R$ 441</span>
+      </div>
+    </div>
+  </div>
+
+  <section>
+    <h2>Como o canal funciona</h2>
+    <p class="sec-lede">Tudo automatizado: coleta, comparação com o histórico e publicação.</p>
+
+    <div class="grid">
+      <div class="card">
+        <span class="tag">COLETA</span>
+        <h3>Varredura contínua</h3>
+        <p>Percorremos as categorias de hardware, periféricos e produtos gamer várias vezes por dia e registramos o preço de cada item encontrado.</p>
+      </div>
+      <div class="card">
+        <span class="tag">COMPARAÇÃO</span>
+        <h3>Histórico próprio</h3>
+        <p>Cada produto tem sua série de preços guardada. É ela que define se a oferta de hoje é boa, não o valor riscado na página da loja.</p>
+      </div>
+      <div class="card">
+        <span class="tag">PUBLICAÇÃO</span>
+        <h3>Só o que passa no corte</h3>
+        <p>Publicamos apenas os itens que atingem nossos critérios de queda e relevância. O resto fica de fora, mesmo que tenha desconto anunciado.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>O que muda na prática</h2>
+    <p class="sec-lede">A diferença entre repassar o anúncio da loja e acompanhar o preço.</p>
+
+    <div class="compare">
+      <div>
+        <h3>CANAL DE PROMOÇÃO COMUM</h3>
+        <ul>
+          <li>Repassa o "de/por" que a loja informou</li>
+          <li>Sem forma de saber se o preço já foi menor</li>
+          <li>Percentual chamativo, base duvidosa</li>
+          <li>Mesma oferta reaparece sem novidade</li>
+        </ul>
+      </div>
+      <div class="ours">
+        <h3>RADAR DE OFERTAS</h3>
+        <ul>
+          <li>Mostra o preço que nós mesmos registramos antes</li>
+          <li>Informa o menor valor já visto para aquele item</li>
+          <li>Percentual calculado sobre preço real praticado</li>
+          <li>Só volta a publicar quando o preço cai de novo</li>
+        </ul>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <h2>Transparência</h2>
+    <div class="disclosure">
+      <p>
+        <strong>Os links publicados no canal são links de afiliado.</strong>
+        Se você comprar por eles, recebemos uma comissão da loja — sem nenhum custo adicional para você.
+      </p>
+      <p>
+        Isso não influencia o que publicamos. A seleção das ofertas é feita pelo preço e pelo
+        histórico do produto, não pela comissão que ele paga.
+      </p>
+      <p>
+        Preços e disponibilidade mudam a qualquer momento. Ofertas válidas enquanto durarem os estoques
+        e sujeitas à disponibilidade nas lojas.
+      </p>
+    </div>
+  </section>
+
+</div>
+
+<footer>
+  <div class="wrap foot">
+    <span>Radar de Ofertas · hardware, periféricos e games</span>
+    <span><a href="https://t.me/RadarDeOferts">t.me/RadarDeOferts</a></span>
+  </div>
+</footer>
+
+</body>
+</html>
