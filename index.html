@@ -1,6 +1,7 @@
 <!DOCTYPE html>
 <html lang="pt-BR">
 <head>
+<!-- 63.8738, -149.7525 -->
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Radar de Ofertas — monitoramento de preços de hardware e games</title>
@@ -87,11 +88,11 @@
   .spark path.line{
     fill:none;stroke:var(--signal);stroke-width:2;
     stroke-linejoin:round;stroke-linecap:round;
-    stroke-dasharray:520;stroke-dashoffset:520;
-    animation:draw 2.2s .3s ease-out forwards;
+    stroke-dasharray:1;stroke-dashoffset:1;
+    animation:draw 2.6s .4s cubic-bezier(.22,.61,.36,1) forwards;
   }
   @keyframes draw{to{stroke-dashoffset:0;}}
-  .spark circle{opacity:0;animation:pop .4s 2.3s ease-out forwards;}
+  .spark circle{opacity:0;animation:pop .45s 2.9s ease-out forwards;}
   @keyframes pop{to{opacity:1;}}
   .chart-foot{
     display:flex;justify-content:space-between;
@@ -196,7 +197,7 @@
 
       <svg class="spark" viewBox="0 0 320 120" preserveAspectRatio="none" role="img"
            aria-label="Gráfico mostrando o preço caindo de 512 para 441 reais ao longo de quatro verificações.">
-        <path class="line" d="M6,26 L82,34 L158,52 L234,64 L314,96"/>
+        <path class="line" pathLength="1" d="M6,26 L82,34 L158,52 L234,64 L314,96"/>
         <circle cx="314" cy="96" r="4.5" fill="#F0A339"/>
       </svg>
 
